@@ -10,6 +10,8 @@ import UIKit
 class AddViewController: UIViewController {
     @IBOutlet weak var taskTextField: UITextField!
     
+    var callbackAddTask: (_ attribute: String) -> Void = { _ in}
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -20,7 +22,8 @@ class AddViewController: UIViewController {
     }
     
     @IBAction func doneButtonActionHandler(_ sender: Any) {
-        
+        callbackAddTask(taskTextField.text);
+        self.dismiss(animated: true, completion: nil)
     }
     
 }

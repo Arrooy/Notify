@@ -16,6 +16,16 @@ class MainTableViewController: UITableViewController {
         super.viewDidLoad()
         addSomeTasks()
     }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "segue1" {
+            let addVC = segue.destination as! AddViewController
+        
+            addVC.callbackAddTask = { taskContent in
+                print(taskContent)
+                self.tasks.append(Task(name:taskContent,taskIsCompleted:false))
+            }
+        }
+    }
     
     func addSomeTasks() {
         tasks.append(Task(name:"Ei!",taskIsCompleted: false))

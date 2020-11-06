@@ -12,7 +12,6 @@ class TaskTableViewCell: UITableViewCell {
     @IBOutlet weak var ImatgeCheck: UIImageView!
     @IBOutlet weak var TaskName: UILabel!
     
-    // Definim callback com a atribut del nostre controlador
     var callbackImagePressed: () -> Void = {}
 
     override func awakeFromNib() {
