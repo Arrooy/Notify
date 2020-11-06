@@ -42,8 +42,8 @@ class MainTableViewController: UITableViewController {
         cell.ImatgeCheck.image = tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
         cell.callbackImagePressed = { 
             print("Callback working.")
-            tasks[indexPath.row].taskIsCompleted = !tasks[indexPath.row].taskIsCompleted;
-            cell.ImatgeCheck.image = tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
+            self.tasks[indexPath.row].taskIsCompleted = !self.tasks[indexPath.row].taskIsCompleted;
+            cell.ImatgeCheck.image = self.tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
         }
         
         return cell
