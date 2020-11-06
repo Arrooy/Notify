@@ -10,22 +10,23 @@ import UIKit
 class MainTableViewController: UITableViewController {
 
     var tasks: [Task] = [Task]()
-    
-    
+        
+
     override func viewDidLoad() {
         super.viewDidLoad()
         addSomeTasks()
     }
     
-    func addSomeTasks(){
+    func addSomeTasks() {
         tasks.append(Task(name:"Ei!",taskIsCompleted: false))
-        tasks.append(Task(name:"done !!",taskIsCompleted: true))    }
+        tasks.append(Task(name:"done !!",taskIsCompleted: true))    
+    }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    override func tableView(_ tableView:UITableView, heightForRowAt indexPath:IndexPath)->CGFloat{
+    override func tableView(_ tableView:UITableView, heightForRowAt indexPath:IndexPath) -> CGFloat {
         return 125.5
     }
     
@@ -39,8 +40,12 @@ class MainTableViewController: UITableViewController {
         // Configure the cell...
         cell.TaskName.text = tasks[indexPath.row].taskName
         cell.ImatgeCheck.image = tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
+        cell.callbackImagePressed = { 
+            print("Callback working.")
+            tasks[indexPath.row].taskIsCompleted = !tasks[indexPath.row].taskIsCompleted;
+            cell.ImatgeCheck.image = tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
+        }
         
         return cell
     }
-    
 }
