@@ -22,7 +22,7 @@ class AddViewController: UIViewController {
     }
     
     @IBAction func doneButtonActionHandler(_ sender: Any) {
-        callbackAddTask(taskTextField.text);
+        callbackAddTask(taskTextField.text!);
         self.dismiss(animated: true, completion: nil)
     }
     

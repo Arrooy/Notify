@@ -23,7 +23,13 @@ class MainTableViewController: UITableViewController {
             addVC.callbackAddTask = { taskContent in
                 print(taskContent)
                 self.tasks.append(Task(name:taskContent,taskIsCompleted:false))
+                /*self.beginUpdates()
+                self.insertRowsAtIndexPaths([
+                NSIndexPath(forRow: tasks.count-1, inSection: 0)], withRowAnimation: .Automatic)
+                tblname.endUpdates()    */
+                
             }
+            
         }
     }
     
