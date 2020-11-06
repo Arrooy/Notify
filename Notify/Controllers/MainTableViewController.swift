@@ -38,7 +38,7 @@ class MainTableViewController: UITableViewController {
         
         // Configure the cell...
         cell.TaskName.text = tasks[indexPath.row].taskName
-        cell.ImatgeCheck.image = tasks[indexPath.row].taskIsCompleted ? UIImage(named:"happy") : UIImage(named:"sad")
+        cell.ImatgeCheck.image = tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
         
         return cell
     }
