@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF2CFCDB255D5C3500AC4B14 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2CFCDA255D5C3500AC4B14 /* UserRepository.swift */; };
 		EF493A3F254C8856003FE7E5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF493A3E254C8856003FE7E5 /* AppDelegate.swift */; };
 		EF493A41254C8856003FE7E5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF493A40254C8856003FE7E5 /* SceneDelegate.swift */; };
 		EF493A43254C8856003FE7E5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF493A42254C8856003FE7E5 /* ViewController.swift */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EF2CFCDA255D5C3500AC4B14 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
 		EF493A3B254C8856003FE7E5 /* Notify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Notify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF493A3E254C8856003FE7E5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EF493A40254C8856003FE7E5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 				EF493A66254C91C2003FE7E5 /* AddViewController.swift */,
 				EF493A69254C97E6003FE7E5 /* TaskTableViewCell.swift */,
 				EF493A6C254C9912003FE7E5 /* MainTableViewController.swift */,
+				EF2CFCDA255D5C3500AC4B14 /* UserRepository.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -187,6 +190,7 @@
 				EF493A43254C8856003FE7E5 /* ViewController.swift in Sources */,
 				EF493A3F254C8856003FE7E5 /* AppDelegate.swift in Sources */,
 				EF493A41254C8856003FE7E5 /* SceneDelegate.swift in Sources */,
+				EF2CFCDB255D5C3500AC4B14 /* UserRepository.swift in Sources */,
 				EF493A6D254C9912003FE7E5 /* MainTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,13 +9,22 @@ import UIKit
 
 class MainTableViewController: UITableViewController {
 
+    let REPKEY = "notify_key"
+    
     var tasks: [Task] = [Task]()
-        
+    var repository: UserRepository = UserRepository()
 
+    var names: [String]? = [String]()
+    var states: [Bool]? = [Bool]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        (names, states) = repository.getUserInfo(forUserID: REPKEY)
+        
         addSomeTasks()
     }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segue1" {
             let addVC = segue.destination as! AddViewController
@@ -25,9 +34,11 @@ class MainTableViewController: UITableViewController {
                 self.tasks.append(Task(name:taskContent,taskIsCompleted:false))
                 self.tableView.reloadData()
                 self.refreshControl?.endRefreshing()
+                
+                self.addTaskToDB(name: taskContent)
+                
                 /*self.beginUpdates()
                 self.insertRowsAtIndexPaths([
-                NSIndexPath(forRow: tasks.count-1, inSection: 0)], withRowAnimation: .Automatic)
                 tblname.endUpdates()    */
                 
             }
@@ -35,9 +46,43 @@ class MainTableViewController: UITableViewController {
         }
     }
     
+    func addTaskToDB(name: String) {
+        repository.removeUserInfo(forUserID: REPKEY)
+        
+        names?.append(name)
+        states?.append(false)
+        
+        repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!)
+    }
+    
+    func deleteTaskFromDB(index: Int) {
+        repository.removeUserInfo(forUserID: REPKEY)
+        
+        names?.remove(at: index)
+        states?.remove(at: index)
+        
+        repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!)
+    }
+    
+    func updateTaskFromDB(index: Int, name: String, state: Bool) {
+        repository.removeUserInfo(forUserID: REPKEY)
+
+        names?[index] = name
+        states?[index] = state
+        
+        repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!)
+    }
+
+    
     func addSomeTasks() {
-        tasks.append(Task(name:"Ei!",taskIsCompleted: false))
-        tasks.append(Task(name:"done !!",taskIsCompleted: true))
+        var so: [String]? = [String]()
+        var bo: [Bool]? = [Bool]()
+
+        (so, bo) = repository.getUserInfo(forUserID: REPKEY)
+        
+        for i in 0...((so?.count ?? 0)-1) {
+            tasks.append(Task(name:so?[i] ?? "Error", taskIsCompleted: bo?[i] ?? false))
+        }
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -62,6 +107,8 @@ class MainTableViewController: UITableViewController {
             print("Callback working.")
             self.tasks[indexPath.row].taskIsCompleted = !self.tasks[indexPath.row].taskIsCompleted;
             cell.ImatgeCheck.image = self.tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
+            
+            self.updateTaskFromDB(index: indexPath.row, name: self.tasks[indexPath.row].taskName ?? "Error", state: self.tasks[indexPath.row].taskIsCompleted)
         }
         
         return cell
@@ -76,6 +123,8 @@ class MainTableViewController: UITableViewController {
             self.tasks.remove(at: indexPath.row)
             self.tableView.reloadData()
             self.refreshControl?.endRefreshing()
+            
+            self.deleteTaskFromDB(index: indexPath.row)
         }
     }
 }
