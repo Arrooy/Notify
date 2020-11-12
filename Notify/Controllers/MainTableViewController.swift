@@ -23,6 +23,8 @@ class MainTableViewController: UITableViewController {
             addVC.callbackAddTask = { taskContent in
                 print(taskContent)
                 self.tasks.append(Task(name:taskContent,taskIsCompleted:false))
+                self.tableView.reloadData()
+                self.refreshControl?.endRefreshing()
                 /*self.beginUpdates()
                 self.insertRowsAtIndexPaths([
                 NSIndexPath(forRow: tasks.count-1, inSection: 0)], withRowAnimation: .Automatic)
@@ -35,7 +37,7 @@ class MainTableViewController: UITableViewController {
     
     func addSomeTasks() {
         tasks.append(Task(name:"Ei!",taskIsCompleted: false))
-        tasks.append(Task(name:"done !!",taskIsCompleted: true))    
+        tasks.append(Task(name:"done !!",taskIsCompleted: true))
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -63,5 +65,17 @@ class MainTableViewController: UITableViewController {
         }
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == UITableViewCell.EditingStyle.delete) {
+            self.tasks.remove(at: indexPath.row)
+            self.tableView.reloadData()
+            self.refreshControl?.endRefreshing()
+        }
     }
 }
