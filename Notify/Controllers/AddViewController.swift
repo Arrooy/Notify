@@ -30,13 +30,13 @@ class AddViewController: UIViewController {
     //Todo: Check this and add result to callback
     func showAlertDatePicker(){
         let myDatePicker: UIDatePicker = UIDatePicker()
-        myDatePicker.timeZone = .local
+        myDatePicker.timeZone = .current
         myDatePicker.frame = CGRect(x: 0, y: 15, width: 270, height: 200)
         let alertController = UIAlertController(title: "\n\n\n\n\n\n\n\n", message: nil, preferredStyle: .alert)
         alertController.view.addSubview(myDatePicker)
         let selectAction = UIAlertAction(title: "Ok", style: .default, handler: { _ in
             print("Selected Date: \(myDatePicker.date)")
-            print("\(type(myDatePicker.date))")
+            print("\(type(of: myDatePicker.date))")
         })
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         alertController.addAction(selectAction)

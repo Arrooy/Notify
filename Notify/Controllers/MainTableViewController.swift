@@ -30,13 +30,12 @@ class MainTableViewController: UITableViewController {
             let addVC = segue.destination as! AddViewController
         
             addVC.callbackAddTask = { taskContent in
-                print(taskContent)
                 self.tasks.append(Task(name:taskContent,taskIsCompleted:false))
                 self.tableView.reloadData()
                 self.refreshControl?.endRefreshing()
                 
                 self.addTaskToDB(name: taskContent)
-                
+                print(taskContent)
                 /*self.beginUpdates()
                 self.insertRowsAtIndexPaths([
                 tblname.endUpdates()    */
@@ -46,6 +45,9 @@ class MainTableViewController: UITableViewController {
     }
     
     func addTaskToDB(name: String) {
+        if (names == nil) {names = [String]()}
+        if (states == nil) {states = [Bool]()}
+        
         repository.removeUserInfo(forUserID: REPKEY)
         
         names?.append(name)
@@ -79,8 +81,10 @@ class MainTableViewController: UITableViewController {
 
         (so, bo) = repository.getUserInfo(forUserID: REPKEY)
         
-        for i in 0...((so?.count ?? 0)-1) {
-            tasks.append(Task(name:so?[i] ?? "Error", taskIsCompleted: bo?[i] ?? false))
+        if ((so?.count ?? -1) > 0) {
+            for i in 0...((so?.count ?? 0)-1) {
+                tasks.append(Task(name:so?[i] ?? "Error", taskIsCompleted: bo?[i] ?? false))
+            }
         }
     }
 
@@ -100,7 +104,7 @@ class MainTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "identifyCell", for: indexPath) as! TaskTableViewCell
         
         // Configure the cell...
-        updateCell(indexPath);
+        updateCell(indexPath: indexPath);
         
         return cell
     }
@@ -111,12 +115,12 @@ class MainTableViewController: UITableViewController {
         cell.TaskName.text = tasks[indexPath.row].taskName
         cell.ImatgeCheck.image = tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
         
-        cell.callbackImagePressed == niL ? { 
+        cell.callbackImagePressed = {
             self.tasks[indexPath.row].taskIsCompleted = !self.tasks[indexPath.row].taskIsCompleted;
             cell.ImatgeCheck.image = self.tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
             
             self.updateTaskFromDB(index: indexPath.row, name: self.tasks[indexPath.row].taskName ?? "Error", state: self.tasks[indexPath.row].taskIsCompleted)
-        } : cell.callbackImagePressed
+        }// : cell.callbackImagePressed
 
         self.tableView.reloadData()
         self.refreshControl?.endRefreshing()
@@ -127,14 +131,14 @@ class MainTableViewController: UITableViewController {
     }
 
     //TODO: Check this
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        if !tasts[indexPath.row].taskIsCompleted {
+        if !tasks[indexPath.row].taskIsCompleted {
             let alert = UIAlertController(title: "Marcar com a completada...", message:nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "Marcar com completa", style: .default, handler:{_ in 
                 self.tasks[indexPath.row].taskIsCompleted = true
-                self.updateCell(indexPath);
+                self.updateCell(indexPath: indexPath);
             }))
             alert.addAction(UIAlertAction(title: "Cancel·lar", style: .cancel, handler: nil))
             present(alert, animated:true, completion: nil)
@@ -142,13 +146,13 @@ class MainTableViewController: UITableViewController {
             let alert = UIAlertController(title: "Que vols fer?", message:nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "Marcar com incompleta", style: .default, handler:{_ in 
                 self.tasks[indexPath.row].taskIsCompleted = false
-                self.updateCell(indexPath);
+                self.updateCell(indexPath: indexPath);
             }))
-            alert.addAction(UIAlertAction(title: "Eliminar", style: .destructive, handler {_ in 
-                removeTask(indexPath.row)
+            alert.addAction(UIAlertAction(title: "Eliminar", style: .destructive, handler: {_ in
+                self.removeTask(index: indexPath.row)
             }))
             
-            present(alert, animated:true, completition:nil)
+            present(alert, animated:true, completion:nil)
         }
     }
 
@@ -157,13 +161,13 @@ class MainTableViewController: UITableViewController {
         self.tableView.reloadData()
         self.refreshControl?.endRefreshing()
         
-        self.deleteTaskFromDB(index)
+        self.deleteTaskFromDB(index: index)
     }
 
     //Check this
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if (editingStyle == UITableViewCell.EditingStyle.delete) {
-            removeTask(indexPath.row)
+            removeTask(index: indexPath.row)
         }
     }
     
