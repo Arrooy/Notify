@@ -42,7 +42,6 @@ class MainTableViewController: UITableViewController {
                 tblname.endUpdates()    */
                 
             }
-            
         }
     }
     
@@ -116,6 +115,11 @@ class MainTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
+    }
+
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        //CODE TO BE RUN ON CELL TOUCH
+        print("Tapped " + indexPath.row)
     }
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
