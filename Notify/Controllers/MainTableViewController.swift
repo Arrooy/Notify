@@ -126,6 +126,7 @@ class MainTableViewController: UITableViewController {
         return true
     }
 
+    //TODO: Check this
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -159,6 +160,7 @@ class MainTableViewController: UITableViewController {
         self.deleteTaskFromDB(index)
     }
 
+    //Check this
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if (editingStyle == UITableViewCell.EditingStyle.delete) {
             removeTask(indexPath.row)
