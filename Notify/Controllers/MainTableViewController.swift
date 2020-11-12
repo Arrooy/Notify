@@ -100,35 +100,68 @@ class MainTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "identifyCell", for: indexPath) as! TaskTableViewCell
         
         // Configure the cell...
-        cell.TaskName.text = tasks[indexPath.row].taskName
-        cell.ImatgeCheck.image = tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
-        cell.callbackImagePressed = { 
-            print("Callback working.")
-            self.tasks[indexPath.row].taskIsCompleted = !self.tasks[indexPath.row].taskIsCompleted;
-            cell.ImatgeCheck.image = self.tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
-            
-            self.updateTaskFromDB(index: indexPath.row, name: self.tasks[indexPath.row].taskName ?? "Error", state: self.tasks[indexPath.row].taskIsCompleted)
-        }
+        updateCell(indexPath);
         
         return cell
     }
     
+
+    func updateCell(indexPath:IndexPath){
+        let cell = tableView.dequeueReusableCell(withIdentifier: "identifyCell", for: indexPath) as! TaskTableViewCell
+        cell.TaskName.text = tasks[indexPath.row].taskName
+        cell.ImatgeCheck.image = tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
+        
+        cell.callbackImagePressed == niL ? { 
+            self.tasks[indexPath.row].taskIsCompleted = !self.tasks[indexPath.row].taskIsCompleted;
+            cell.ImatgeCheck.image = self.tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
+            
+            self.updateTaskFromDB(index: indexPath.row, name: self.tasks[indexPath.row].taskName ?? "Error", state: self.tasks[indexPath.row].taskIsCompleted)
+        } : cell.callbackImagePressed
+
+        self.tableView.reloadData()
+        self.refreshControl?.endRefreshing()
+    }
+
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        //CODE TO BE RUN ON CELL TOUCH
-        print("Tapped " + indexPath.row)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        if !tasts[indexPath.row].taskIsCompleted {
+            let alert = UIAlertController(title: "Marcar com a completada...", message:nil, preferredStyle: .actionSheet)
+            alert.addAction(UIAlertAction(title: "Marcar com completa", style: .default, handler:{_ in 
+                self.tasks[indexPath.row].taskIsCompleted = true
+                self.updateCell(indexPath);
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel·lar", style: .cancel, handler: nil))
+            present(alert, animated:true, completion: nil)
+        }else{
+            let alert = UIAlertController(title: "Que vols fer?", message:nil, preferredStyle: .actionSheet)
+            alert.addAction(UIAlertAction(title: "Marcar com incompleta", style: .default, handler:{_ in 
+                self.tasks[indexPath.row].taskIsCompleted = false
+                self.updateCell(indexPath);
+            }))
+            alert.addAction(UIAlertAction(title: "Eliminar", style: .destructive, handler {_ in 
+                removeTask(indexPath.row)
+            }))
+            
+            present(alert, animated:true, completition:nil)
+        }
+    }
+
+    func removeTask(index:Int){
+        self.tasks.remove(at: index)
+        self.tableView.reloadData()
+        self.refreshControl?.endRefreshing()
+        
+        self.deleteTaskFromDB(index)
     }
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if (editingStyle == UITableViewCell.EditingStyle.delete) {
-            self.tasks.remove(at: indexPath.row)
-            self.tableView.reloadData()
-            self.refreshControl?.endRefreshing()
-            
-            self.deleteTaskFromDB(index: indexPath.row)
+            removeTask(indexPath.row)
         }
     }
 }
