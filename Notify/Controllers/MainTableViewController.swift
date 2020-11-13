@@ -60,6 +60,11 @@ class MainTableViewController: UITableViewController {
         
         names?.remove(at: index)
         states?.remove(at: index)
+
+        if ((notids?[index] ?? nil) != nil) {
+            removePendingNotificationRequests(withIdentifiers identifiers: [notids[index]])
+        }
+
         notids?.remove(at: index)
         
         repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!, notificationIDs: notids!)
@@ -81,7 +86,6 @@ class MainTableViewController: UITableViewController {
         
         repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!, notificationIDs: notids!)
     }
-
     
     func addSomeTasks() {
         var so: [String]? = [String]()
