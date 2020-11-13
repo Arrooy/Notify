@@ -17,6 +17,7 @@ class MainTableViewController: UITableViewController {
 
     var names: [String]? = [String]()
     var states: [Bool]? = [Bool]()
+    var notids: [String]? = [String]()
     
     var notificationsActivated:Bool = false
     
@@ -70,7 +71,7 @@ class MainTableViewController: UITableViewController {
         
         names?.append(name)
         states?.append(false)
-        notids?.append(nil)
+        notids?.append("")
         
         repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!, notificationIDs: notids!)
     }
@@ -82,7 +83,15 @@ class MainTableViewController: UITableViewController {
         states?.remove(at: index)
 
         if ((notids?[index] ?? nil) != nil) {
-            removePendingNotificationRequests(withIdentifiers identifiers: [notids[index]])
+            UNUserNotificationCenter.current().getPendingNotificationRequests { (notificationRequests) in
+                var identifiers: [String] = [self.notids![index]]
+                for notification:UNNotificationRequest in notificationRequests {
+                    if notification.identifier == "identifierCancel" {
+                        identifiers.append(notification.identifier)
+                    }
+               }
+               UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+            }
         }
 
         notids?.remove(at: index)
@@ -110,8 +119,9 @@ class MainTableViewController: UITableViewController {
     func loadTasksFromDB() {
         var so: [String]? = [String]()
         var bo: [Bool]? = [Bool]()
+        var no: [String]? = [String]()
 
-        (so, bo) = repository.getUserInfo(forUserID: REPKEY)
+        (so, bo, no) = repository.getUserInfo(forUserID: REPKEY)
         
         if ((so?.count ?? -1) > 0) {
             for i in 0...((so?.count ?? 0)-1) {

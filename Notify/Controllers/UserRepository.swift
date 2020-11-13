@@ -9,7 +9,7 @@ import Foundation
 
 class UserRepository {
     enum Key: String, CaseIterable {
-        case name, avatarData
+        case name, avatarData, notificationID
         func make(for userID: String) -> String {
             return self.rawValue + "_" + userID
         }
@@ -24,13 +24,13 @@ class UserRepository {
     func storeInfo(forUserID userID: String, name: [String], avatarData: [Bool], notificationIDs: [String]) {
         saveValue(forKey: .name, value: name, userID: userID)
         saveValue(forKey: .avatarData, value: avatarData, userID: userID)
-        saveValue(forKey: "NOTID", value: notificationIDs, userID: userID)
+        saveValue(forKey: .notificationID, value: notificationIDs, userID: userID)
     }
     
     func getUserInfo(forUserID userID: String) -> (name: [String]?, avatarData: [Bool]?, notificationIDs: [String]?) {
         let name: [String]? = readValue(forKey: .name, userID: userID)
         let avatarData: [Bool]? = readValue(forKey: .avatarData, userID: userID)
-        let notificationIDs: [String]? = readValue(forKey: "NOTID", userID: userID)
+        let notificationIDs: [String]? = readValue(forKey: .notificationID, userID: userID)
         return (name, avatarData, notificationIDs)
     }
     
