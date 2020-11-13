@@ -27,6 +27,7 @@ class AddViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
+    
     //Todo: Check this and add result to callback
     func showAlertDatePicker(){
         let myDatePicker: UIDatePicker = UIDatePicker()
@@ -41,6 +42,7 @@ class AddViewController: UIViewController {
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         alertController.addAction(selectAction)
         alertController.addAction(cancelAction)
-        present(alertController, animated: true)
+        //self.presentViewController(alertController, animated: true)
+        presentedViewController?.present(alertController,animated:true)
     }
 }
