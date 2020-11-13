@@ -124,8 +124,7 @@
                                 <rect key="frame" x="37" y="326" width="49" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
-                                    <action selector="remindMeLater:" destination="dqM-wJ-04M" eventType="valueChanged" id="6k7-kO-xAP"/>
-                                    <action selector="remindMeLaterSwitch:" destination="dqM-wJ-04M" eventType="valueChanged" id="7fZ-0K-1CO"/>
+                                    <action selector="switcChanged:" destination="dqM-wJ-04M" eventType="valueChanged" id="oB0-6O-CNI"/>
                                 </connections>
                             </switch>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Remind me later" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fpK-QB-G3Z">

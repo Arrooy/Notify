@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UserNotifications
 
 class MainTableViewController: UITableViewController {
 
@@ -17,29 +18,45 @@ class MainTableViewController: UITableViewController {
     var names: [String]? = [String]()
     var states: [Bool]? = [Bool]()
     
+    var notificationsActivated:Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         (names, states) = repository.getUserInfo(forUserID: REPKEY)
         
-        addSomeTasks()
+        //Ask user for permission to show notifications
+        requestNotificationPermission()
+        
+        
+        loadTasksFromDB()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segue1" {
             let addVC = segue.destination as! AddViewController
         
-            addVC.callbackAddTask = { taskContent in
+            addVC.callbackEndedView = {
+                if !self.notificationsActivated {
+                    self.showAlert(title: "No es mostrará la notificació de la tasca!", message: "Per a poder rebre notificacions, has d'acceptar les notificacions de l'app a les settings del IPhone.")
+                }
+            }
+            
+            addVC.callbackAddTask = { taskContent,notificationDate in
                 self.tasks.append(Task(name:taskContent,taskIsCompleted:false))
+                
+                self.requestNotificationPermission()
+                
+                if self.notificationsActivated{
+                    if let notifDate = notificationDate{
+                        self.scheduleNotification(title:taskContent,description:"Recorda acabar la tasca!", notificationDate: notifDate)
+                    }
+                }
+                
                 self.tableView.reloadData()
                 self.refreshControl?.endRefreshing()
                 
                 self.addTaskToDB(name: taskContent)
-                print(taskContent)
-                /*self.beginUpdates()
-                self.insertRowsAtIndexPaths([
-                tblname.endUpdates()    */
-                
             }
         }
     }
@@ -75,7 +92,7 @@ class MainTableViewController: UITableViewController {
     }
 
     
-    func addSomeTasks() {
+    func loadTasksFromDB() {
         var so: [String]? = [String]()
         var bo: [Bool]? = [Bool]()
 
@@ -131,10 +148,23 @@ class MainTableViewController: UITableViewController {
         return true
     }
 
+    func showAlert(title:String, message:String){
+        let alert = UIAlertController(title: title, message:message, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Acceptar", style: .cancel, handler: nil))
+
+        if let presVC = self.presentedViewController {
+            presVC.present(alert,animated: true,completion: nil)
+        }else{
+            present(alert,animated:true,completion: nil)
+        }
+    }
+    
+    
     //TODO: Check this
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
+        
         if !tasks[indexPath.row].taskIsCompleted {
             let alert = UIAlertController(title: "Marcar com a completada...", message:nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "Marcar com completa", style: .default, handler:{_ in 
@@ -176,22 +206,47 @@ class MainTableViewController: UITableViewController {
         }
     }
     
-    func createNotification(title: String, description: String, weekday: Int, hour: Int, minute: Int) {
+    func requestNotificationPermission(){
+        let center = UNUserNotificationCenter.current()
+
+        center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+            self.notificationsActivated = granted
+        }
+    }
+    
+    
+    func scheduleNotification(title: String, description: String, notificationDate:Date) {
+        let center = UNUserNotificationCenter.current()
+
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = description
+        content.sound = UNNotificationSound.default
+        
+        let dateComponents = Calendar.current.dateComponents([.year,.day,.month,.hour,.minute,.second], from: notificationDate)
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        center.add(request)
+    }
+    /*
+    func createNotification(title: String, description: String, notificationDate:Date) {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = description
         
-        // Configure the recurring date.
-        var dateComponents = DateComponents()
-        dateComponents.calendar = Calendar.current
-
-        dateComponents.weekday = weekday
-        dateComponents.hour = hour
-        dateComponents.minute = minute
-           
+        //Configure the recurring date
+        //let dateComponents = Calendar.current.dateComponents([.year,.day,.month,.hour,.minute,.second], from: notificationDate)
+        
+        let notificationDate = Date().addingTimeInterval(TimeInterval(10))
+        var component = Calendar.current.dateComponents([.year,.day,.month,.hour,.minute,.second], from: notificationDate)
+        component.year = 2020
+        print(component)
+        
         // Create the trigger as a repeating event.
         let trigger = UNCalendarNotificationTrigger(
-                 dateMatching: dateComponents, repeats: true)
+                 dateMatching: component, repeats: false)
         
         // Create the request
         let uuidString = title
@@ -201,9 +256,10 @@ class MainTableViewController: UITableViewController {
         // Schedule the request with the system.
         let notificationCenter = UNUserNotificationCenter.current()
         notificationCenter.add(request) { (error) in
-           if error != nil {
-              // Handle any errors.
-           }
+            if error != nil {
+                // Handle any errors.
+                print("Error in notification")
+            }
         }
-    }
+    }*/
 }

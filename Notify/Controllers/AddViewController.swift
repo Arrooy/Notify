@@ -12,7 +12,9 @@ class AddViewController: UIViewController {
     
     @IBOutlet var datePicker: UIDatePicker!
     
-    var callbackAddTask: (_ attribute: String) -> Void = { _ in}
+    var callbackAddTask: (_ attribute: String,_ attribute: Date?) -> Void = { _,_ in}
+    var callbackEndedView: () -> Void = {}
+    
     var userWantsReminder:Bool = false
     
     override func viewDidLoad() {
@@ -25,21 +27,14 @@ class AddViewController: UIViewController {
     }
     
     @IBAction func doneButtonActionHandler(_ sender: Any) {
-        if userWantsReminder{
-            print("Date is ",datePicker.date)
-        }else{
-            print("Date not used")
-        }
+                
+        callbackAddTask(taskTextField.text!, userWantsReminder ? datePicker.date : nil);
         
-        callbackAddTask(taskTextField.text!);
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true, completion: callbackEndedView)
     }
+ 
     
-   //TODO: THIS PETA
-    @IBAction func remindMeLaterSwitch(_ sender: Any) {
-        let sw = sender as! UISwitch
-        userWantsReminder = sw.isOn
+    @IBAction func switcChanged(_ sender: Any) {
+        userWantsReminder = (sender as! UISwitch).isOn
     }
-    
-    
 }
