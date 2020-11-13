@@ -26,9 +26,17 @@ class MainTableViewController: UITableViewController {
         
         (names, states, notids) = repository.getUserInfo(forUserID: REPKEY)
         
+        if (names != nil && notids == nil) {
+            notids = [String]()
+            if ((names?.count ?? 0) > 0 && notids == nil) {
+                for _ in 0...(names?.count ?? 0)-1 {
+                    notids?.append("")
+                }
+            }
+        }
+        
         //Ask user for permission to show notifications
         requestNotificationPermission()
-        
         
         loadTasksFromDB()
     }
@@ -82,7 +90,7 @@ class MainTableViewController: UITableViewController {
         names?.remove(at: index)
         states?.remove(at: index)
 
-        if ((notids?[index] ?? nil) != nil) {
+        if ((notids?[index] ?? "") != "") {
             UNUserNotificationCenter.current().getPendingNotificationRequests { (notificationRequests) in
                 var identifiers: [String] = [self.notids![index]]
                 for notification:UNNotificationRequest in notificationRequests {
