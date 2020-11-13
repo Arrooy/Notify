@@ -16,11 +16,12 @@ class MainTableViewController: UITableViewController {
 
     var names: [String]? = [String]()
     var states: [Bool]? = [Bool]()
+    var notids: [String]? = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        (names, states) = repository.getUserInfo(forUserID: REPKEY)
+        (names, states, notids) = repository.getUserInfo(forUserID: REPKEY)
         
         addSomeTasks()
     }
@@ -35,11 +36,7 @@ class MainTableViewController: UITableViewController {
                 self.refreshControl?.endRefreshing()
                 
                 self.addTaskToDB(name: taskContent)
-                print(taskContent)
-                /*self.beginUpdates()
-                self.insertRowsAtIndexPaths([
-                tblname.endUpdates()    */
-                
+                //print(taskContent)
             }
         }
     }
@@ -47,13 +44,15 @@ class MainTableViewController: UITableViewController {
     func addTaskToDB(name: String) {
         if (names == nil) {names = [String]()}
         if (states == nil) {states = [Bool]()}
+        if (notids == nil) {notids = [String]()}
         
         repository.removeUserInfo(forUserID: REPKEY)
         
         names?.append(name)
         states?.append(false)
+        notids?.append(nil)
         
-        repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!)
+        repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!, notificationIDs: notids!)
     }
     
     func deleteTaskFromDB(index: Int) {
@@ -61,8 +60,9 @@ class MainTableViewController: UITableViewController {
         
         names?.remove(at: index)
         states?.remove(at: index)
+        notids?.remove(at: index)
         
-        repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!)
+        repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!, notificationIDs: notids!)
     }
     
     func updateTaskFromDB(index: Int, name: String, state: Bool) {
@@ -71,7 +71,15 @@ class MainTableViewController: UITableViewController {
         names?[index] = name
         states?[index] = state
         
-        repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!)
+        repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!, notificationIDs: notids!)
+    }
+
+    func setNotificationIDatDB(index: Int, notificationID: String) {
+        repository.removeUserInfo(forUserID: REPKEY)
+
+        notids?[index] = notificationID
+        
+        repository.storeInfo(forUserID: REPKEY, name: names!, avatarData: states!, notificationIDs: notids!)
     }
 
     

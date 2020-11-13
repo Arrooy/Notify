@@ -21,15 +21,17 @@ class UserRepository {
         self.userDefaults = userDefaults
     }
     // MARK: - API
-    func storeInfo(forUserID userID: String, name: [String], avatarData: [Bool]) {
+    func storeInfo(forUserID userID: String, name: [String], avatarData: [Bool], notificationIDs: [String]) {
         saveValue(forKey: .name, value: name, userID: userID)
         saveValue(forKey: .avatarData, value: avatarData, userID: userID)
+        saveValue(forKey: "NOTID", value: notificationIDs, userID: userID)
     }
     
-    func getUserInfo(forUserID userID: String) -> (name: [String]?, avatarData: [Bool]?) {
+    func getUserInfo(forUserID userID: String) -> (name: [String]?, avatarData: [Bool]?, notificationIDs: [String]?) {
         let name: [String]? = readValue(forKey: .name, userID: userID)
         let avatarData: [Bool]? = readValue(forKey: .avatarData, userID: userID)
-        return (name, avatarData)
+        let notificationIDs: [String]? = readValue(forKey: "NOTID", userID: userID)
+        return (name, avatarData, notificationIDs)
     }
     
     func removeUserInfo(forUserID userID: String) {
