@@ -24,7 +24,7 @@ class TaskTableViewCell: UITableViewCell {
 
     @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
     {
-        let tappedImage = tapGestureRecognizer.view as! UIImageView
+        //let tappedImage = tapGestureRecognizer.view as! UIImageView
         // Your action
         callbackImagePressed();
     }

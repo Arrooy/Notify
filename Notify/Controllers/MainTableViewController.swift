@@ -101,16 +101,16 @@ class MainTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "identifyCell", for: indexPath) as! TaskTableViewCell
         
+
         // Configure the cell...
-        updateCell(indexPath: indexPath);
+        let cell = updateCellData(indexPath: indexPath);
         
         return cell
     }
     
 
-    func updateCell(indexPath:IndexPath){
+    func updateCellData(indexPath:IndexPath) -> TaskTableViewCell{
         let cell = tableView.dequeueReusableCell(withIdentifier: "identifyCell", for: indexPath) as! TaskTableViewCell
         cell.TaskName.text = tasks[indexPath.row].taskName
         cell.ImatgeCheck.image = tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
@@ -120,10 +120,11 @@ class MainTableViewController: UITableViewController {
             cell.ImatgeCheck.image = self.tasks[indexPath.row].taskIsCompleted ? UIImage(named:"checked") : UIImage(named:"unchecked")
             
             self.updateTaskFromDB(index: indexPath.row, name: self.tasks[indexPath.row].taskName ?? "Error", state: self.tasks[indexPath.row].taskIsCompleted)
-        }// : cell.callbackImagePressed
-
-        self.tableView.reloadData()
-        self.refreshControl?.endRefreshing()
+        }
+        
+        //self.tableView.reloadData()
+        //self.refreshControl?.endRefreshing()
+        return cell
     }
 
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -138,7 +139,9 @@ class MainTableViewController: UITableViewController {
             let alert = UIAlertController(title: "Marcar com a completada...", message:nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "Marcar com completa", style: .default, handler:{_ in 
                 self.tasks[indexPath.row].taskIsCompleted = true
-                self.updateCell(indexPath: indexPath);
+                self.updateCellData(indexPath: indexPath);
+                self.tableView.reloadData()
+                self.refreshControl?.endRefreshing()
             }))
             alert.addAction(UIAlertAction(title: "Cancel·lar", style: .cancel, handler: nil))
             present(alert, animated:true, completion: nil)
@@ -146,7 +149,9 @@ class MainTableViewController: UITableViewController {
             let alert = UIAlertController(title: "Que vols fer?", message:nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "Marcar com incompleta", style: .default, handler:{_ in 
                 self.tasks[indexPath.row].taskIsCompleted = false
-                self.updateCell(indexPath: indexPath);
+                self.updateCellData(indexPath: indexPath)
+                self.tableView.reloadData()
+                self.refreshControl?.endRefreshing()
             }))
             alert.addAction(UIAlertAction(title: "Eliminar", style: .destructive, handler: {_ in
                 self.removeTask(index: indexPath.row)
